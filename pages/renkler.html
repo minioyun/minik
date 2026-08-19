@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🎨 Renkleri Öğren - Minik Kaşif</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+    font-family:Arial,Helvetica,sans-serif;
+
+    background:
+    linear-gradient(
+        180deg,
+        #6EC6FF,
+        #B3E5FC,
+        #FFF9C4
+    );
+
+    text-align:center;
+    overflow-x:hidden;
+}
+
+header{
+    padding:22px;
+    color:white;
+}
+
+header h1{
+    font-size:38px;
+    text-shadow:2px 2px 6px rgba(0,0,0,.2);
+}
+
+header p{
+    margin-top:8px;
+    font-size:20px;
+}
+
+.info{
+    width:95%;
+    max-width:800px;
+    margin:10px auto 20px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.infoBox{
+    background:white;
+    padding:11px 17px;
+    border-radius:18px;
+    font-size:20px;
+    font-weight:bold;
+
+    box-shadow:
+    0 5px 12px rgba(0,0,0,.15);
+}
+
+#question{
+    width:92%;
+    max-width:800px;
+    margin:15px auto;
+    padding:20px;
+
+    background:white;
+    border-radius:25px;
+
+    font-size:29px;
+    font-weight:bold;
+
+    box-shadow:
+    0 7px 18px rgba(0,0,0,.15);
+}
+
+/* RENK BUTONLARI */
+
+#colors{
+    width:95%;
+    max-width:850px;
+    margin:25px auto;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:15px;
+}
+
+.colorButton{
+    height:125px;
+
+    border:none;
+    border-radius:25px;
+
+    cursor:pointer;
+
+    box-shadow:
+    0 8px 15px rgba(0,0,0,.25);
+
+    transition:.2s;
+
+    position:relative;
+}
+
+.colorButton:hover{
+    transform:scale(1.06);
+
+    box-shadow:
+    0 12px 22px rgba(0,0,0,.3);
+}
+
+.colorButton:active{
+    transform:scale(.93);
+}
+
+/* Doğru */
+
+.correct{
+    animation:
+    correctAnimation .5s ease;
+}
+
+@keyframes correctAnimation{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.18);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}
+
+/* Yanlış */
+
+.wrong{
+    animation:
+    wrongAnimation .35s ease;
+}
+
+@keyframes wrongAnimation{
+
+    0%{
+        transform:translateX(0);
+    }
+
+    25%{
+        transform:translateX(-10px);
+    }
+
+    50%{
+        transform:translateX(10px);
+    }
+
+    75%{
+        transform:translateX(-10px);
+    }
+
+    100%{
+        transform:translateX(0);
+    }
+
+}
+
+/* MESAJ */
+
+#message{
+    min-height:50px;
+
+    color:white;
+
+    font-size:30px;
+    font-weight:bold;
+
+    text-shadow:
+    2px 2px 5px rgba(0,0,0,.2);
+}
+
+/* ANA MENÜ */
+
+.homeButton{
+    margin:20px auto 30px;
+
+    padding:15px 25px;
+
+    border:none;
+    border-radius:18px;
+
+    background:#FF9F1C;
+
+    color:white;
+
+    font-size:20px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+    0 6px 12px rgba(0,0,0,.2);
+}
+
+.homeButton:hover{
+    transform:scale(1.05);
+}
+
+/* KONFETİ */
+
+.confetti{
+    position:fixed;
+
+    top:-30px;
+
+    pointer-events:none;
+
+    z-index:999;
+
+    animation:
+    fall 2s linear forwards;
+}
+
+@keyframes fall{
+
+    from{
+        transform:
+        translateY(0)
+        rotate(0deg);
+    }
+
+    to{
+        transform:
+        translateY(110vh)
+        rotate(720deg);
+    }
+
+}
+
+/* TELEFON */
+
+@media(max-width:700px){
+
+    header h1{
+        font-size:30px;
+    }
+
+    header p{
+        font-size:17px;
+    }
+
+    .infoBox{
+        font-size:16px;
+        padding:9px 12px;
+    }
+
+    #question{
+        font-size:23px;
+        padding:17px;
+    }
+
+    #colors{
+        grid-template-columns:
+        repeat(3,1fr);
+
+        gap:10px;
+    }
+
+    .colorButton{
+        height:100px;
+        border-radius:20px;
+    }
+
+}
+
+@media(max-width:400px){
+
+    #colors{
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .colorButton{
+        height:110px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>🎨 Renkleri Öğren</h1>
+
+<p>Doğru rengi bul!</p>
+
+</header>
+
+
+<div class="info">
+
+<div class="infoBox" id="score">
+⭐ Puan: 0
+</div>
+
+<div class="infoBox" id="lives">
+❤️❤️❤️
+</div>
+
+<div class="infoBox" id="level">
+🏆 Seviye: 1
+</div>
+
+</div>
+
+
+<div id="question">
+Hazırlanıyor...
+</div>
+
+
+<div id="colors"></div>
+
+
+<div id="message"></div>
+
+
+<button
+class="homeButton"
+onclick="location.href='../index.html'">
+
+🏠 Ana Menü
+
+</button>
+
+
+<script>
+
+/* =================================
+   🌈 RENKLER
+================================= */
+
+const colors = [
+
+    {
+        name:"Kırmızı",
+        color:"#FF0000"
+    },
+
+    {
+        name:"Mavi",
+        color:"#0066FF"
+    },
+
+    {
+        name:"Yeşil",
+        color:"#00B83F"
+    },
+
+    {
+        name:"Sarı",
+        color:"#FFD600"
+    },
+
+    {
+        name:"Turuncu",
+        color:"#FF7A00"
+    },
+
+    {
+        name:"Mor",
+        color:"#8E44AD"
+    },
+
+    {
+        name:"Pembe",
+        color:"#FF4FA3"
+    },
+
+    {
+        name:"Turkuaz",
+        color:"#00CFCF"
+    },
+
+    {
+        name:"Lacivert",
+        color:"#172B8F"
+    },
+
+    {
+        name:"Kahverengi",
+        color:"#8B4513"
+    },
+
+    {
+        name:"Gri",
+        color:"#777777"
+    },
+
+    {
+        name:"Siyah",
+        color:"#111111"
+    }
+
+];
+
+
+/* =================================
+   OYUN
+================================= */
+
+let correctColor;
+
+let score=0;
+
+let lives=3;
+
+let level=1;
+
+let locked=false;
+
+
+/* =================================
+   KARIŞTIRMA
+================================= */
+
+function shuffle(array){
+
+    const copy=[...array];
+
+    for(
+        let i=copy.length-1;
+        i>0;
+        i--
+    ){
+
+        const j=
+        Math.floor(
+            Math.random()*(i+1)
+        );
+
+        [
+            copy[i],
+            copy[j]
+        ]=
+        [
+            copy[j],
+            copy[i]
+        ];
+
+    }
+
+    return copy;
+
+}
+
+
+/* =================================
+   RENKLERİ OLUŞTUR
+================================= */
+
+function createColors(){
+
+    const container=
+    document.getElementById(
+        "colors"
+    );
+
+    container.innerHTML="";
+
+
+    const mixedColors=
+    shuffle(colors);
+
+
+    mixedColors.forEach(
+        color=>{
+
+            const button=
+            document.createElement(
+                "button"
+            );
+
+
+            button.className=
+            "colorButton";
+
+
+            button.dataset.color=
+            color.name;
+
+
+            button.style.background=
+            color.color;
+
+
+            button.addEventListener(
+                "click",
+                ()=>{
+
+                    checkAnswer(
+                        button
+                    );
+
+                }
+            );
+
+
+            container.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+
+/* =================================
+   SES
+================================= */
+
+let audioContext=null;
+
+
+function getAudio(){
+
+    if(!audioContext){
+
+        audioContext=
+        new(
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+
+    }
+
+    return audioContext;
+
+}
+
+
+function beep(
+    frequency,
+    duration,
+    type="sine"
+){
+
+    const audio=
+    getAudio();
+
+
+    const oscillator=
+    audio.createOscillator();
+
+
+    const gain=
+    audio.createGain();
+
+
+    oscillator.type=type;
+
+    oscillator.frequency.value=
+    frequency;
+
+
+    oscillator.connect(gain);
+
+    gain.connect(
+        audio.destination
+    );
+
+
+    gain.gain.value=.18;
+
+
+    oscillator.start();
+
+
+    gain.gain.exponentialRampToValueAtTime(
+        .0001,
+        audio.currentTime+
+        duration
+    );
+
+
+    oscillator.stop(
+        audio.currentTime+
+        duration
+    );
+
+}
+
+
+/* DOĞRU SES */
+
+function correctSound(){
+
+    beep(700,.12,"triangle");
+
+    setTimeout(()=>{
+        beep(900,.12,"triangle");
+    },120);
+
+    setTimeout(()=>{
+        beep(1200,.18,"triangle");
+    },240);
+
+}
+
+
+/* YANLIŞ SES */
+
+function wrongSound(){
+
+    beep(
+        250,
+        .35,
+        "sawtooth"
+    );
+
+}
+
+
+/* =================================
+   KONUŞMA
+================================= */
+
+function speak(text){
+
+    if(
+        !("speechSynthesis" in window)
+    ){
+
+        return;
+
+    }
+
+
+    speechSynthesis.cancel();
+
+
+    const voice=
+    new SpeechSynthesisUtterance(
+        text
+    );
+
+
+    voice.lang="tr-TR";
+
+    voice.rate=.9;
+
+    voice.pitch=1.1;
+
+
+    speechSynthesis.speak(
+        voice
+    );
+
+}
+
+
+/* =================================
+   YENİ SORU
+================================= */
+
+function newQuestion(){
+
+    locked=false;
+
+
+    correctColor=
+    colors[
+        Math.floor(
+            Math.random()*
+            colors.length
+        )
+    ];
+
+
+    document.getElementById(
+        "question"
+    ).innerHTML=
+    "👉 <b>"+
+    correctColor.name+
+    "</b> rengini bul!";
+
+
+    createColors();
+
+
+    setTimeout(()=>{
+
+        speak(
+            correctColor.name+
+            " rengini bul"
+        );
+
+    },300);
+
+}
+
+
+/* =================================
+   CEVAP
+================================= */
+
+function checkAnswer(button){
+
+    if(locked){
+        return;
+    }
+
+
+    locked=true;
+
+
+    const selectedColor=
+    button.dataset.color;
+
+
+    /* DOĞRU */
+
+    if(
+        selectedColor===
+        correctColor.name
+    ){
+
+        score++;
+
+
+        if(score%5===0){
+
+            level++;
+
+        }
+
+
+        updateInfo();
+
+
+        button.classList.add(
+            "correct"
+        );
+
+
+        document.getElementById(
+            "message"
+        ).textContent=
+        "🎉 Aferin!";
+
+
+        correctSound();
+
+
+        speak("Aferin!");
+
+
+        createConfetti();
+
+
+        setTimeout(()=>{
+
+            document.getElementById(
+                "message"
+            ).textContent="";
+
+
+            newQuestion();
+
+        },1200);
+
+    }
+
+
+    /* YANLIŞ */
+
+    else{
+
+        lives--;
+
+
+        updateInfo();
+
+
+        button.classList.add(
+            "wrong"
+        );
+
+
+        document.getElementById(
+            "message"
+        ).textContent=
+        "😊 Tekrar dene!";
+
+
+        wrongSound();
+
+
+        speak("Tekrar dene");
+
+
+        setTimeout(()=>{
+
+            button.classList.remove(
+                "wrong"
+            );
+
+
+            if(lives<=0){
+
+                gameOver();
+
+            }
+
+            else{
+
+                locked=false;
+
+            }
+
+        },800);
+
+    }
+
+}
+
+
+/* =================================
+   BİLGİ
+================================= */
+
+function updateInfo(){
+
+    document.getElementById(
+        "score"
+    ).textContent=
+    "⭐ Puan: "+score;
+
+
+    document.getElementById(
+        "lives"
+    ).textContent=
+    lives>0
+    ? "❤️".repeat(lives)
+    : "💔";
+
+
+    document.getElementById(
+        "level"
+    ).textContent=
+    "🏆 Seviye: "+level;
+
+}
+
+
+/* =================================
+   OYUN BİTTİ
+================================= */
+
+function gameOver(){
+
+    locked=true;
+
+
+    document.getElementById(
+        "question"
+    ).innerHTML=
+    "🎮 Oyun Bitti!";
+
+
+    document.getElementById(
+        "message"
+    ).textContent=
+    "⭐ Puanın: "+score;
+
+
+    speak(
+        "Oyun bitti. "+
+        score+
+        " puan kazandın."
+    );
+
+
+    setTimeout(()=>{
+
+        const again=
+        confirm(
+            "🎮 Tekrar oynamak ister misin?"
+        );
+
+
+        if(again){
+
+            score=0;
+
+            lives=3;
+
+            level=1;
+
+            updateInfo();
+
+            document.getElementById(
+                "message"
+            ).textContent="";
+
+            newQuestion();
+
+        }
+        else{
+
+            location.href=
+            "../index.html";
+
+        }
+
+    },1000);
+
+}
+
+
+/* =================================
+   KONFETİ
+================================= */
+
+function createConfetti(){
+
+    const symbols=[
+        "⭐",
+        "🎉",
+        "✨",
+        "🌟",
+        "💖"
+    ];
+
+
+    for(
+        let i=0;
+        i<25;
+        i++
+    ){
+
+        const item=
+        document.createElement(
+            "div"
+        );
+
+
+        item.className=
+        "confetti";
+
+
+        item.textContent=
+        symbols[
+            Math.floor(
+                Math.random()*
+                symbols.length
+            )
+        ];
+
+
+        item.style.left=
+        Math.random()*100+
+        "vw";
+
+
+        item.style.fontSize=
+        18+
+        Math.random()*22+
+        "px";
+
+
+        item.style.animationDuration=
+        1.5+
+        Math.random()+
+        "s";
+
+
+        document.body.appendChild(
+            item
+        );
+
+
+        setTimeout(()=>{
+
+            item.remove();
+
+        },3000);
+
+    }
+
+}
+
+
+/* =================================
+   BAŞLAT
+================================= */
+
+updateInfo();
+
+newQuestion();
+
+</script>
+
+</body>
+</html>
