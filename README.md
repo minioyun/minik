@@ -1,0 +1,2 @@
+# minik
+Ücretsiz oyun sitesi
