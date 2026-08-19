@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1.0"
+>
+
+<title>🍎 Meyveyi Bul - Minik Kaşif</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+
+    font-family:Arial,sans-serif;
+
+    text-align:center;
+
+    background:
+    linear-gradient(
+        180deg,
+        #81D4FA,
+        #B3E5FC,
+        #FFF9C4
+    );
+
+    overflow-x:hidden;
+}
+
+header{
+    padding:20px;
+    color:white;
+}
+
+h1{
+    font-size:36px;
+    margin:8px;
+
+    text-shadow:
+    2px 2px 6px #777;
+}
+
+header p{
+    font-size:20px;
+}
+
+.info{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+}
+
+.box{
+
+    background:white;
+
+    padding:12px 18px;
+
+    border-radius:18px;
+
+    font-weight:bold;
+
+    box-shadow:
+    0 5px 10px #999;
+}
+
+#question{
+
+    width:92%;
+
+    max-width:700px;
+
+    margin:20px auto 10px;
+
+    padding:20px;
+
+    background:white;
+
+    border-radius:25px;
+
+    font-size:27px;
+
+    font-weight:bold;
+
+    box-shadow:
+    0 5px 12px #999;
+}
+
+.listen{
+
+    border:0;
+
+    border-radius:18px;
+
+    padding:13px 22px;
+
+    background:#1976D2;
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    margin:10px;
+
+    -webkit-tap-highlight-color:transparent;
+}
+
+.listen:active{
+
+    transform:scale(.95);
+}
+
+#fruits{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:15px;
+
+    width:95%;
+
+    max-width:900px;
+
+    margin:15px auto;
+}
+
+.fruit{
+
+    min-height:150px;
+
+    border:none;
+
+    border-radius:25px;
+
+    background:white;
+
+    font-size:65px;
+
+    cursor:pointer;
+
+    box-shadow:
+    0 6px 12px #777;
+
+    transition:.2s;
+
+    -webkit-tap-highlight-color:transparent;
+}
+
+.fruit:hover{
+
+    transform:scale(1.05);
+}
+
+.fruit:active{
+
+    transform:scale(.95);
+}
+
+.fruit span{
+
+    display:block;
+
+    margin-top:8px;
+
+    font-size:18px;
+
+    font-weight:bold;
+}
+
+.correct{
+
+    background:#4CAF50 !important;
+
+    color:white;
+}
+
+.wrong{
+
+    background:#F44336 !important;
+
+    color:white;
+
+    animation:shake .3s;
+}
+
+@keyframes shake{
+
+    25%{
+        transform:translateX(-10px);
+    }
+
+    50%{
+        transform:translateX(10px);
+    }
+
+    75%{
+        transform:translateX(-10px);
+    }
+
+}
+
+#message{
+
+    min-height:50px;
+
+    color:white;
+
+    font-size:28px;
+
+    font-weight:bold;
+}
+
+.home{
+
+    margin:20px;
+
+    padding:14px 25px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#FF9800;
+
+    color:white;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+@media(max-width:600px){
+
+    h1{
+        font-size:29px;
+    }
+
+    #question{
+        font-size:22px;
+    }
+
+    #fruits{
+
+        grid-template-columns:
+        repeat(2,1fr);
+
+        gap:10px;
+    }
+
+    .fruit{
+
+        min-height:125px;
+
+        font-size:50px;
+    }
+
+    .fruit span{
+
+        font-size:16px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>🍎 Meyveyi Bul</h1>
+
+<p>Doğru meyveyi bul!</p>
+
+</header>
+
+
+<div class="info">
+
+<div class="box" id="score">
+⭐ Puan: 0
+</div>
+
+<div class="box" id="lives">
+❤️❤️❤️
+</div>
+
+<div class="box" id="level">
+🏆 Seviye: 1
+</div>
+
+</div>
+
+
+<div id="question">
+
+Hazırlanıyor...
+
+</div>
+
+
+<button
+class="listen"
+id="listenButton"
+onclick="playQuestionSound()">
+
+🔊 Soruyu Dinle
+
+</button>
+
+
+<div id="fruits"></div>
+
+
+<div id="message"></div>
+
+
+<button
+class="home"
+onclick="location.href='../index.html'">
+
+🏠 Ana Menü
+
+</button>
+
+
+<script>
+
+
+/* =========================================
+   🍎 MEYVELER
+========================================= */
+
+const fruits = [
+
+    {
+        emoji:"🍎",
+        name:"Elma",
+        sound:"elma.mp3"
+    },
+
+    {
+        emoji:"🍌",
+        name:"Muz",
+        sound:"muz.mp3"
+    },
+
+    {
+        emoji:"🍊",
+        name:"Portakal",
+        sound:"portakal.mp3"
+    },
+
+    {
+        emoji:"🍓",
+        name:"Çilek",
+        sound:"cilek.mp3"
+    },
+
+    {
+        emoji:"🍇",
+        name:"Üzüm",
+        sound:"uzum.mp3"
+    },
+
+    {
+        emoji:"🍉",
+        name:"Karpuz",
+        sound:"karpuz.mp3"
+    },
+
+    {
+        emoji:"🍐",
+        name:"Armut",
+        sound:"armut.mp3"
+    },
+
+    {
+        emoji:"🍑",
+        name:"Şeftali",
+        sound:"seftali.mp3"
+    },
+
+    {
+        emoji:"🍍",
+        name:"Ananas",
+        sound:"ananas.mp3"
+    },
+
+    {
+        emoji:"🥝",
+        name:"Kivi",
+        sound:"kivi.mp3"
+    },
+
+    {
+        emoji:"🍒",
+        name:"Kiraz",
+        sound:"kiraz.mp3"
+    },
+
+    {
+        emoji:"🥭",
+        name:"Mango",
+        sound:"mango.mp3"
+    }
+
+];
+
+
+/* =========================================
+   🎮 DEĞİŞKENLER
+========================================= */
+
+let correct = null;
+
+let score = 0;
+
+let lives = 3;
+
+let level = 1;
+
+let locked = false;
+
+
+/* =========================================
+   🔊 SES DOSYASI
+========================================= */
+
+let currentAudio = null;
+
+
+/* =========================================
+   🔊 SES ÇAL
+========================================= */
+
+function playSound(file){
+
+    try{
+
+        if(currentAudio){
+
+            currentAudio.pause();
+
+            currentAudio.currentTime = 0;
+
+        }
+
+
+        currentAudio =
+        new Audio(
+            "../sounds/" + file
+        );
+
+
+        currentAudio.volume = 1;
+
+
+        const promise =
+        currentAudio.play();
+
+
+        if(promise){
+
+            promise.catch(error => {
+
+                console.log(
+                    "Ses oynatılamadı:",
+                    error
+                );
+
+            });
+
+        }
+
+    }
+
+    catch(error){
+
+        console.log(
+            "Ses hatası:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   🔊 SORUYU DİNLE
+========================================= */
+
+function playQuestionSound(){
+
+    if(!correct){
+
+        return;
+
+    }
+
+    playSound(
+        correct.sound
+    );
+
+}
+
+
+/* =========================================
+   ✅ DOĞRU SES
+========================================= */
+
+function correctSound(){
+
+    playSound(
+        "aferin.mp3"
+    );
+
+}
+
+
+/* =========================================
+   ❌ YANLIŞ SES
+========================================= */
+
+function wrongSound(){
+
+    playSound(
+        "tekrar-dene.mp3"
+    );
+
+}
+
+
+/* =========================================
+   🔀 KARIŞTIR
+========================================= */
+
+function shuffle(array){
+
+    const a =
+    [...array];
+
+
+    for(
+        let i = a.length - 1;
+        i > 0;
+        i--
+    ){
+
+        const j =
+        Math.floor(
+            Math.random() *
+            (i + 1)
+        );
+
+
+        [
+            a[i],
+            a[j]
+        ] =
+        [
+            a[j],
+            a[i]
+        ];
+
+    }
+
+
+    return a;
+
+}
+
+
+/* =========================================
+   🆕 YENİ SORU
+========================================= */
+
+function newQuestion(){
+
+    locked = false;
+
+
+    correct =
+    fruits[
+        Math.floor(
+            Math.random() *
+            fruits.length
+        )
+    ];
+
+
+    document.getElementById(
+        "question"
+    ).innerHTML =
+
+    "👉 <b>" +
+    correct.name +
+    "</b> meyvesini bul!";
+
+
+    createFruits();
+
+}
+
+
+/* =========================================
+   🍎 MEYVELERİ OLUŞTUR
+========================================= */
+
+function createFruits(){
+
+    const area =
+    document.getElementById(
+        "fruits"
+    );
+
+
+    area.innerHTML = "";
+
+
+    shuffle(fruits).forEach(
+        fruit => {
+
+
+            const button =
+            document.createElement(
+                "button"
+            );
+
+
+            button.className =
+            "fruit";
+
+
+            button.innerHTML =
+
+            fruit.emoji +
+
+            "<span>" +
+
+            fruit.name +
+
+            "</span>";
+
+
+            button.onclick = function(){
+
+                checkAnswer(
+                    button,
+                    fruit
+                );
+
+            };
+
+
+            area.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   🎯 CEVAP
+========================================= */
+
+function checkAnswer(
+    button,
+    fruit
+){
+
+    if(locked){
+
+        return;
+
+    }
+
+
+    locked = true;
+
+
+    /* ================================
+       ✅ DOĞRU
+    ================================= */
+
+    if(
+        fruit.name ===
+        correct.name
+    ){
+
+        score++;
+
+
+        if(
+            score % 5 === 0
+        ){
+
+            level++;
+
+        }
+
+
+        button.classList.add(
+            "correct"
+        );
+
+
+        document.getElementById(
+            "message"
+        ).textContent =
+
+        "🎉 Aferin! Doğru meyve!";
+
+
+        correctSound();
+
+
+        updateInfo();
+
+
+        setTimeout(
+            function(){
+
+                document.getElementById(
+                    "message"
+                ).textContent = "";
+
+
+                newQuestion();
+
+            },
+            1200
+        );
+
+    }
+
+
+    /* ================================
+       ❌ YANLIŞ
+    ================================= */
+
+    else{
+
+        lives--;
+
+
+        button.classList.add(
+            "wrong"
+        );
+
+
+        document.getElementById(
+            "message"
+        ).textContent =
+
+        "😊 Tekrar dene!";
+
+
+        wrongSound();
+
+
+        updateInfo();
+
+
+        setTimeout(
+            function(){
+
+                button.classList.remove(
+                    "wrong"
+                );
+
+
+                if(
+                    lives <= 0
+                ){
+
+                    gameOver();
+
+                }
+
+                else{
+
+                    locked = false;
+
+                }
+
+            },
+            800
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   📊 BİLGİLER
+========================================= */
+
+function updateInfo(){
+
+    document.getElementById(
+        "score"
+    ).textContent =
+
+    "⭐ Puan: " +
+    score;
+
+
+    document.getElementById(
+        "lives"
+    ).textContent =
+
+    lives > 0
+
+    ? "❤️".repeat(lives)
+
+    : "💔";
+
+
+    document.getElementById(
+        "level"
+    ).textContent =
+
+    "🏆 Seviye: " +
+    level;
+
+}
+
+
+/* =========================================
+   🎮 OYUN BİTTİ
+========================================= */
+
+function gameOver(){
+
+    locked = true;
+
+
+    document.getElementById(
+        "question"
+    ).textContent =
+
+    "🎮 Oyun Bitti!";
+
+
+    setTimeout(
+        function(){
+
+            if(
+                confirm(
+                    "🎮 Tekrar oynamak ister misin?"
+                )
+            ){
+
+                score = 0;
+
+                lives = 3;
+
+                level = 1;
+
+
+                updateInfo();
+
+                newQuestion();
+
+            }
+
+            else{
+
+                location.href =
+                "../index.html";
+
+            }
+
+        },
+        500
+    );
+
+}
+
+
+/* =========================================
+   🚀 BAŞLAT
+========================================= */
+
+updateInfo();
+
+newQuestion();
+
+
+</script>
+
+</body>
+
+</html>
